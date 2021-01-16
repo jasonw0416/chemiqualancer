@@ -28,13 +28,15 @@
         document.getElementById("success_alert").style.display="none";
     }
 </script>
+<script type="text/javascript" src="balance.js"></script>
+
 
 <div class="row">
     <h1>Chemiqualancer</h1>
 </div>
 <div>
     <br><input class="form-control" id="balancer" placeholder="Enter Unbalanced Equation">
-    <button class="btn btn-primary">Balance!</button>
+    <button class="btn btn-primary" onclick="balance()" >Balance!</button>
 </div>
 
 <div id="success_alert" class="alert alert-success" style="display: none">

@@ -1,43 +1,64 @@
 var equation = "NaOH + H2SO4 -> Na2SO4 + H2O";
 
-var list = equation.split(" ");
-
-for (i = 0; i < list.length; i++){
-}
-
+var list = [];
 var reactant_check = true;
 var reactant = [];
 var product = [];
-for (i = 0; i < list.length; i++){
-    if (list[i] === "->"){
-        reactant_check = false;
-    }
-    else if(list[i] !== "+"){
-        if (reactant_check){
-            reactant.push(list[i]);
-        }
-        else{
-            product.push(list[i]);
-        }
-    }
+var atoms = [];
+var matrix = [];
+
+function balance(){
+    equation = document.getElementById("balancer").value;
+    init();
+    createLists();
+    createMatrix();
+
+    console.log(matrix);
+    document.getElementById("balancer").value = matrix;
+
 }
 
+function init(){
+    reactant_check = true;
+    reactant = [];
+    product = [];
+    atoms = [];
+    matrix = [];
+    list = equation.split(" ");
 
-console.log(reactant);
-console.log(product);
-var atoms = [];
+}
 
-reactant = splitElements(reactant,true);
-product = splitElements(product,false);
-console.log(reactant);
-console.log(product);
-atoms = [...new Set(atoms)];
+function createLists(){
 
-console.log(atoms);
+    for (i = 0; i < list.length; i++){
+        if (list[i] === "->"){
+            reactant_check = false;
+        }
+        else if(list[i] !== "+"){
+            if (reactant_check){
+                reactant.push(list[i]);
+            }
+            else{
+                product.push(list[i]);
+            }
+        }
+    }
 
-var matrix;
-createMatrix(matrix);
-console.log(matrix);
+    console.log(reactant);
+    console.log(product);
+
+    reactant = splitElements(reactant,true);
+    product = splitElements(product,false);
+
+    console.log(reactant);
+    console.log(product);
+
+    atoms = [...new Set(atoms)];
+
+    console.log(atoms);
+
+}
+
 
 function createMatrix(){
     matrix = new Array(atoms.length);
