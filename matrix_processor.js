@@ -1,8 +1,8 @@
 var matrix = [];
 
-function matrix_processor(rows, colummns) {
+function rref(rows, colummns) {
     var pivot = 0;
-    for (r = 0; r < rows; ++r) {
+    for (r = 0; r < rows; ++r) {s
         if (columns <= pivot) {
             console.log("Matrix is not solvable");
             return 0;
