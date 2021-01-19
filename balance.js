@@ -2,6 +2,20 @@
 // var equation = "CH4 + O2 -> CO2 + H2O";
 // var equation = "CH4 + Cl2 -> CCl4 + HCl";
 //var equation = "H2 + O2 -> H2O";
+//var equation = "KC8H5O4 + KOH -> K2C8H4O4 + H2O";
+
+/* working ones:
+NaOH + H2SO4 -> Na2SO4 + H2O
+KC8H5O4 + KOH -> K2C8H4O4 + H2O
+SO2 + Li2Se -> SSe2 + Li2O
+GaF3 + Cs -> CsF + Ga
+
+not working ones:
+Na + Cl2 -> NaCl
+C3H8 + O2 -> CO2 + H2O
+
+
+ */
 
 var list = [];
 var reactant_check = true;
@@ -295,7 +309,7 @@ function decimal_to_fraction(decimal){
     var integral_part = Math.floor(decimal);
     var fractional_part = decimal - integral_part;
 
-    const precision = 1000000000; // Accuracy.
+    const precision = 10000000; // Accuracy.
 
     var big_gcd = gcd(Math.round(fractional_part * precision), precision);
 
@@ -350,6 +364,16 @@ function convert_matrix_to_integers(rows, columns){
         for (j = 0; j < columns; ++j){
             list_of_numbers.push(decimal_to_fraction(matrix[i][j])); //converts to a pair (first = numerator, second = denominator)
         }
+    }
+    var is_all_int = 1;
+    for (a = 0; a < list_of_numbers.length; a++){
+        if(list_of_numbers[a][1] !== 1){
+            is_all_int = 0;
+            break;
+        }
+    }
+    if(is_all_int === 1){
+        return;
     }
 
     var least_common_denomiator = 1;

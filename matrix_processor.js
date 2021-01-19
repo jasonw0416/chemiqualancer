@@ -1,4 +1,4 @@
-var matrix = [[ 1, 0, -2, 0, 0 ], [ 1, 4, -4, -1, 0 ], [ 1, 2, 0, -2, 0 ], [ 0, 1, -1, 0, 0 ]];
+var matrix = [[1, 1, -2, 0, 0], [5, 1, -4, -2, 0], [8, 0, -8, 0, 0], [4, 1, -4, -1, 0]];
 
 
 console.log(process_matrix_to_coefficients(4, 5));
@@ -102,7 +102,7 @@ function decimal_to_fraction(decimal){
     var integral_part = Math.floor(decimal);
     var fractional_part = decimal - integral_part;
 
-    const precision = 1000000000; // Accuracy.
+    const precision = 10000000; // Accuracy.
 
     var big_gcd = gcd(Math.round(fractional_part * precision), precision);
 
@@ -157,6 +157,16 @@ function convert_matrix_to_integers(rows, columns){
         for (j = 0; j < columns; ++j){
             list_of_numbers.push(decimal_to_fraction(matrix[i][j])); //converts to a pair (first = numerator, second = denominator)
         }
+    }
+    var is_all_int = 1;
+    for (a = 0; a < list_of_numbers.length; a++){
+        if(list_of_numbers[a][1] !== 1){
+            is_all_int = 0;
+            break;
+        }
+    }
+    if(is_all_int === 1){
+        return;
     }
 
     var least_common_denomiator = 1;
