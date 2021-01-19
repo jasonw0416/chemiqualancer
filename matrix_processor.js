@@ -128,10 +128,10 @@ function find_free_variables(rows, columns){//creates a boolean list that states
                 is_all_zero = 0;
                 break;
             }
-            if(is_all_zero === 1){
+            if(is_all_zero === 1 && j === columns - 1){
                 free_variable_list.push(1);
             }
-            else if(is_all_zero === 0){
+            else if(is_all_zero === 0 && j === columns - 1){
                 free_variable_list.push(0);
             }
 
