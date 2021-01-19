@@ -119,20 +119,17 @@ function lcm(a, b) {//a * b = lcm(a, b) * gcd (a, b)
 
 function find_free_variables(rows, columns){//creates a boolean list that states if a variable is a free variable 0 is false 1 is true
     var free_variable_list = [];
-    var is_all_zero = 1;
+    for (j = 0; j < matrix.length; j++){
+        free_variable_list.push(0);
+    }
     for (i = 0; i < rows; ++i){
         for(j = 0; j < columns; ++j){
             if(matrix[i][j] !== 0){
-                is_all_zero = 0;
                 break;
             }
-            if(is_all_zero === 1 && j === columns - 1){
-                free_variable_list.push(1);
+            if(j === columns - 1){
+                free_variable_list[i] = 1;
             }
-            else if(is_all_zero === 0 && j === columns - 1){
-                free_variable_list.push(0);
-            }
-
         }
     }
     return free_variable_list;
