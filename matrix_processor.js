@@ -1,8 +1,10 @@
-var matrix = [];
+var matrix = [[ 1, 0, -2, 0 ], [ 1, 4, -4, -1 ], [ 1, 2, 0, -2 ], [ 0, 1, -1, 0 ]];
+
+console.log(process_matrix_to_coefficients(4, 4));
 
 function rref(rows, colummns) {
     var pivot = 0;
-    for (r = 0; r < rows; ++r) {s
+    for (r = 0; r < rows; ++r) {
         if (columns <= pivot) {
             console.log("Matrix is not solvable");
             return 0;
@@ -184,7 +186,9 @@ function process_matrix_to_coefficients(rows, columns) {//converts the matrix to
     var free_variables = [];
     ref(rows, columns);
     reformat_matrix(rows, columns);
+    console.log(matrix);
     free_variables = find_free_variables(rows, columns);
+    console.log(free_variables);
     for (i = 0; i < free_variables.length; ++i){
         if(free_variables[i]){
             coefficients[i] = find_convient_lcm_for_free_variables(rows, columns);
