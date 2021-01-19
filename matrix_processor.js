@@ -3,9 +3,6 @@ var matrix = [[1, 1, -2, 0, 0], [5, 1, -4, -2, 0], [8, 0, -8, 0, 0], [4, 1, -4, 
 
 console.log(process_matrix_to_coefficients(4, 5));
 
-
-
-
 function rref(rows, columns) {
     var pivot = 0;
     for (r = 0; r < rows; ++r) {
@@ -189,6 +186,19 @@ function convert_matrix_to_integers(rows, columns){
 
 }
 
+function fix_dimension(rows, columns){
+    var new_rows = rows;
+    while(new_rows !== columns - 1){
+        var list = [];
+        for (i = 0; i < columns; i++){
+            list.push(0);
+        }
+        matrix.push(list);
+        new_rows++;
+    }
+    return new_rows;
+}
+
 function process_matrix_to_coefficients(rows, columns) {//converts the matrix to a list of coefficients corresponding with the order of compounds as they appear.
     var coefficients = [];
     for (j = 0; j < matrix[0].length - 1; ++j){
@@ -196,6 +206,7 @@ function process_matrix_to_coefficients(rows, columns) {//converts the matrix to
     }
 
     var free_variables = [];
+    rows = fix_dimension(rows, columns);
     rref(rows, columns);
     reformat_matrix(rows, columns);
     convert_matrix_to_integers(rows, columns);
