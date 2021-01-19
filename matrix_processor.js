@@ -3,9 +3,6 @@ var matrix = [[ 1, 0, -2, 0, 0 ], [ 1, 4, -4, -1, 0 ], [ 1, 2, 0, -2, 0 ], [ 0, 
 
 console.log(process_matrix_to_coefficients(4, 5));
 
-
-
-
 function rref(rows, columns) {
     var pivot = 0;
     for (r = 0; r < rows; ++r) {
@@ -102,7 +99,7 @@ function decimal_to_fraction(decimal){
     var integral_part = Math.floor(decimal);
     var fractional_part = decimal - integral_part;
 
-    const precision = 1000000000; // Accuracy.
+    const precision = 10000000; // Accuracy.
 
     var big_gcd = gcd(Math.round(fractional_part * precision), precision);
 
@@ -158,6 +155,16 @@ function convert_matrix_to_integers(rows, columns){
             list_of_numbers.push(decimal_to_fraction(matrix[i][j])); //converts to a pair (first = numerator, second = denominator)
         }
     }
+    var is_all_int = 1;
+    for (a = 0; a < list_of_numbers.length; a++){
+        if(list_of_numbers[a][1] !== 1){
+            is_all_int = 0;
+            break;
+        }
+    }
+    if(is_all_int === 1){
+        return;
+    }
 
     var least_common_denomiator = 1;
     for (k = 0; k < list_of_numbers.length; ++k){
@@ -179,6 +186,19 @@ function convert_matrix_to_integers(rows, columns){
 
 }
 
+function fix_dimension(rows, columns){
+    var new_rows = rows;
+    while(new_rows !== columns - 1){
+        var list = [];
+        for (i = 0; i < columns; i++){
+            list.push(0);
+        }
+        matrix.push(list);
+        new_rows++;
+    }
+    return new_rows;
+}
+
 function process_matrix_to_coefficients(rows, columns) {//converts the matrix to a list of coefficients corresponding with the order of compounds as they appear.
     var coefficients = [];
     for (j = 0; j < matrix[0].length - 1; ++j){
@@ -186,6 +206,7 @@ function process_matrix_to_coefficients(rows, columns) {//converts the matrix to
     }
 
     var free_variables = [];
+    rows = fix_dimension(rows, columns);
     rref(rows, columns);
     reformat_matrix(rows, columns);
     convert_matrix_to_integers(rows, columns);
