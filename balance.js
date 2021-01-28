@@ -41,7 +41,9 @@ function balance(){ // balance; basically main()
     coefficients = process_matrix_to_coefficients(rows, columns);
     console.log(coefficients);
     console.log(getString());
-    document.getElementById("output").value = getString();
+    var str1 = getString();
+
+    document.getElementById("output").value = str1();
     //document.getElementById("balancer").value = balanced;
 
 }
