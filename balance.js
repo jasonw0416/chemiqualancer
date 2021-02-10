@@ -41,8 +41,11 @@ function balance(){ // balance; basically main()
     console.log(coefficients);
     console.log(getString());
     var str1 = getString();
+    var eq = convertString(str1);
 
-    document.getElementById("output").value = str1();
+
+    document.getElementById("output").innerHTML = eq;
+    // document.write("<p>" + eq + "</p>");
     //document.getElementById("balancer").value = balanced;
 
 }
@@ -82,6 +85,22 @@ function getString(){
     }
     return string;
 
+}
+
+function convertString(string){
+    str = "";
+    for (let i = 1; i < string.length; i++){
+        if (validateInt(string.charAt(i)) && string.charAt(i-1) === ' '){
+            str += string.charAt(i);
+        }
+        else if (validateInt(string.charAt(i)) && string.charAt(i-1) !== ' '){
+            str += string.charAt(i).sub();
+        }
+        else {
+            str += string.charAt(i);
+        }
+    }
+    return str;
 }
 
 function init(){ // set initial values before running
@@ -212,6 +231,9 @@ function validateInt(char) { // validate if the character is int or not
     return regx.test(char);
 }
 
+function isLetter(str) {
+    return str.length === 1 && str.match(/[a-z]/i);
+}
 
 
 function rref(rows, columns) {
