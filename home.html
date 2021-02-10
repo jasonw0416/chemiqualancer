@@ -2,14 +2,22 @@
 <html lang="en">
 <style>
     *{
+        margin: 0;
         background: paleturquoise;
     }
-    div {
+    div{
         padding: 15px;
     }
     img{
         max-width: 70%;
         height: auto;
+    }
+    nav{
+        background: cornflowerblue;
+    }
+    a{
+        padding: 15px;
+        background: cornflowerblue;
     }
 </style>
 
@@ -40,11 +48,19 @@
 </script>
 <script type="text/javascript" src="balance.js"></script>
 
-
-<div class="row">
-    <h1>Chemiqualancer</h1>
-</div>
 <div>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="#">Chemiqualancer</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <nav class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <nav class="navbar-nav">
+                <a class="nav-link active" href="/home.html/">Home <span class="sr-only"></span></a>
+                <a class="nav-link active" href="/forum.html/">Forum <span class="sr-only"></span></a>
+            </nav>
+        </nav>
+    </nav>
     <br><input class="form-control" id="balancer" placeholder="Enter Unbalanced Equation">
     <button class="btn btn-primary" onclick="double()" >Balance!</button>
 </div>
