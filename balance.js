@@ -41,10 +41,8 @@ function balance(){ // balance; basically main()
     console.log(coefficients);
     console.log(getString());
     var str1 = getString();
-    var eq = convertString(str1);
 
-
-    document.getElementById("output").innerHTML = eq;
+    document.getElementById("output").innerHTML = str1;
     // document.write("<p>" + eq + "</p>");
     //document.getElementById("balancer").value = balanced;
 
@@ -83,7 +81,7 @@ function getString(){
     else{
         string += unsorted_product[unsorted_product.length-1];
     }
-    return string;
+    return convertString(string);
 
 }
 
