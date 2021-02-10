@@ -9,8 +9,7 @@ NaOH + H2SO4 -> Na2SO4 + H2O
 KC8H5O4 + KOH -> K2C8H4O4 + H2O
 SO2 + Li2Se -> SSe2 + Li2O
 GaF3 + Cs -> CsF + Ga
-
-not working ones:
+H2 + O2 -> H2O
 Na + Cl2 -> NaCl
 C3H8 + O2 -> CO2 + H2O
 
