@@ -1,4 +1,4 @@
-var matrix = [[2, 0, -1, 0, 0], [0, 2, -2, -1, 0], [6, 0, 0, -2, 0], [0, 0, 0, 0, 0]];
+var matrix = [[1, 1, -2, 0, 0], [5, 1, -4, -2, 0], [8, 0, -8, 0, 0], [4, 1, -4, -1, 0]];
 
 console.log(process_matrix_to_coefficients(4, 5));
 //console.log(fractioniseMatrix());
@@ -73,8 +73,8 @@ function rref(rows, columns) {
 function reformat_matrix(rows, columns){ //formats -0 to 0
     for (i = 0; i < rows; ++i){
         for(j = 0; j < columns; j++){
-            if(matrix[i][j][0] === -0){
-                matrix[i][j] = createFraction(0, 1);
+            if(matrix[i][j] === -0){
+                matrix[i][j] = 0;
             }
         }
     }
@@ -90,18 +90,6 @@ function gcd(a, b){ //finds gcd via Euclidean Algorithm
     }
 }
 
-function decimal_to_fraction(decimal){
-    var integral_part = Math.floor(decimal);
-    var fractional_part = decimal - integral_part;
-
-    const precision = 10000000; // Accuracy.
-
-    var big_gcd = gcd(Math.round(fractional_part * precision), precision);
-
-    var denominator = precision / big_gcd;
-    var numerator = (Math.round(fractional_part * precision) / big_gcd) + (integral_part * denominator);
-    return [numerator, denominator];
-}
 
 function lcm(a, b) {//a * b = lcm(a, b) * gcd (a, b)
     return (a * b)/gcd(a, b);
@@ -112,12 +100,12 @@ function find_free_variables(rows, columns){//creates a boolean list that states
     for (j = 0; j < matrix.length; ++j){
         free_variable_list.push(1);
     }
-    if(matrix[0][0] === 1){
+    if(matrix[0][0] !== 0){
         free_variable_list[0] = 0;
     }
     for (i = 1; i < columns; ++i){
         for(j = 0; j < rows; ++j){
-            if(matrix[j][i] === 1){
+            if(matrix[j][i] !== 0){
                 var isPivot = 1;
                 for (z = i - 1; z >= 0; z--){
                     if(matrix[j][z] !== 0){
@@ -135,22 +123,6 @@ function find_free_variables(rows, columns){//creates a boolean list that states
 }
 
 
-function find_convient_lcm_for_free_variables(rows, columns){
-    var list_of_numbers = [];
-    for (i = 0; i < rows; ++i){
-        for (j = 0; j < columns; ++j){
-            if(matrix[i][j] === 0){
-                continue;
-            }
-            list_of_numbers.push(matrix[i][j]);
-        }
-    }
-    var least_common_denomiator = 1;
-    for (k = 0; k < list_of_numbers.length; ++k){
-        least_common_denomiator= lcm(list_of_numbers[k], least_common_denomiator); //finds lcm of all numbers in list
-    }
-    return least_common_denomiator;
-}
 
 function convert_matrix_to_integers(rows, columns){
     var list_of_numbers = [];
@@ -225,9 +197,6 @@ function printMatrix(){
     }
 }
 
-function assignValuesToFreeVariables(freeVariables, coefficients){
-
-}
 
 function process_matrix_to_coefficients(rows, columns) {//converts the matrix to a list of coefficients corresponding with the order of compounds as they appear.
     var coefficients = [];
@@ -239,15 +208,15 @@ function process_matrix_to_coefficients(rows, columns) {//converts the matrix to
     rows = fix_dimension(rows, columns);
     fractioniseMatrix();
     rref(rows, columns);
-    reformat_matrix(rows, columns);
     printMatrix();
     convert_matrix_to_integers(rows, columns);
+    reformat_matrix(rows, columns);
 
     free_variables = find_free_variables(rows, columns);
     console.log(free_variables);
     for (i = 0; i < free_variables.length; ++i){
         if(free_variables[i]){
-            coefficients[i] = find_convient_lcm_for_free_variables(rows, columns);
+            coefficients[i] = matrix[0][0];
         }
         else{
             coefficients[i] = matrix[i][columns - 2];
