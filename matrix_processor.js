@@ -1,14 +1,38 @@
-var matrix = [[1, 1, -2, 0, 0], [5, 1, -4, -2, 0], [8, 0, -8, 0, 0], [4, 1, -4, -1, 0]];
+var matrix = [[1, 0, 0, -1, 0], [3, 0, -1, 0, 0], [0, 1, -1, 0, 0]];
 
+console.log(process_matrix_to_coefficients(3, 5));
+//console.log(fractioniseMatrix());
 
-console.log(process_matrix_to_coefficients(4, 5));
+function createFraction(numerator, denominator){
+    return [numerator, denominator];
+}
+
+function reduceFraction(frac){
+    return [frac[0] / gcd(frac[0], frac[1]), frac[1] / gcd(frac[0], frac[1])]
+}
+function fractionAdd(num1, num2){
+    return reduceFraction([(num1[0] * lcm(num1[1], num2[1])/num1[1]) + (num2[0] * lcm(num1[1], num2[1])/num2[1]), lcm(num1[1], num2[1])]);
+}
+function fractionSubtract(num1, num2){
+    return reduceFraction([(num1[0] * lcm(num1[1], num2[1])/num1[1]) - (num2[0] * lcm(num1[1], num2[1])/num2[1]), lcm(num1[1], num2[1])]);
+}
+function fractionMultiply(num1, num2) {
+    return reduceFraction([num1[0] * num2[0], num1[1] * num2[1]]);
+}
+function fractionInverse(num1) {
+    return [num1[1], num1[0]];
+}
+function fractionDivide(num1, num2) {
+    fractionMultiply(num1, fractionInverse(num2));
+
+}
 
 function rref(rows, columns) {
     var pivot = 0;
     for (r = 0; r < rows; ++r) {
 
         var i = r;
-        while (matrix[i][pivot] === 0) {
+        while (matrix[i][pivot][0] === 0) {
             if (columns <= pivot)
                 return;
             ++i;
@@ -29,14 +53,15 @@ function rref(rows, columns) {
         var val = matrix[r][pivot];
 
         for (j = 0; j < columns; ++j){
-            matrix[r][j] /= val;
+            fractionDivide(matrix[r][j], val);
         }
 
         for (i = 0; i < rows; ++i) {
             if (i !== r) {
                 val = matrix[i][pivot];
                 for (j = 0; j < columns; ++j){
-                    matrix[i][j] -= val * matrix[r][j];
+                    matrix[i][j] = fractionSubtract(matrix[i][j], fractionMultiply(val, matrix[r][j]));
+                    //matrix[i][j] -= val * matrix[r][j];
                 }
             }
         }
@@ -44,42 +69,12 @@ function rref(rows, columns) {
     }
 }
 
-function ref(rows, columns) {
-    for (i = 0; i < rows; ++i) {
-
-        if ((matrix[i][i]) !== 1) {
-            var temp = matrix[i][i];
-
-            if (temp === 0) {
-                continue; // Avoid division by zero
-            }
-
-            for (j = 0; j < columns; ++j) {
-                matrix[i][j] = ((matrix[i][j]) / temp);
-            }
-        }
-
-        for (k = i + 1; k < rows; ++k) {
-            var val = matrix[k][i];
-            for (l = i; l < columns; ++l) {
-                matrix[k][l] = matrix[k][l] - (matrix[i][l] * val);
-            }
-
-        }
-    }
-}
-
-function swap(i, j, r) {
-    var temp = matrix[i][j];
-    matrix[i][j] = matrix[r][j];
-    matrix[r][j] = temp;
-}
 
 function reformat_matrix(rows, columns){ //formats -0 to 0
     for (i = 0; i < rows; ++i){
         for(j = 0; j < columns; j++){
-            if(matrix[i][j] === -0){
-                matrix[i][j] = 0;
+            if(matrix[i][j][0] === -0){
+                matrix[i][j] = createFraction(0, 1);
             }
         }
     }
@@ -152,7 +147,7 @@ function convert_matrix_to_integers(rows, columns){
     var list_of_numbers = [];
     for (i = 0; i < rows; ++i){
         for (j = 0; j < columns; ++j){
-            list_of_numbers.push(decimal_to_fraction(matrix[i][j])); //converts to a pair (first = numerator, second = denominator)
+            list_of_numbers.push(matrix[i][j]);
         }
     }
     var is_all_int = 1;
@@ -163,6 +158,11 @@ function convert_matrix_to_integers(rows, columns){
         }
     }
     if(is_all_int === 1){
+        for (i = 0; i < rows; ++i){
+            for (j = 0; j < columns; ++j){
+                matrix[i][j] = list_of_numbers[i * columns + j][0]; //sets matrix to one of all integers
+            }
+        }
         return;
     }
 
@@ -199,6 +199,14 @@ function fix_dimension(rows, columns){
     return new_rows;
 }
 
+function fractioniseMatrix(){
+    for (i = 0; i < matrix.length; i++){
+        for (j = 0; j < matrix[0].length; j++){
+            matrix[i][j] = createFraction(matrix[i][j], 1);
+        }
+    }
+}
+
 function process_matrix_to_coefficients(rows, columns) {//converts the matrix to a list of coefficients corresponding with the order of compounds as they appear.
     var coefficients = [];
     for (j = 0; j < matrix[0].length - 1; ++j){
@@ -207,6 +215,7 @@ function process_matrix_to_coefficients(rows, columns) {//converts the matrix to
 
     var free_variables = [];
     rows = fix_dimension(rows, columns);
+    fractioniseMatrix();
     rref(rows, columns);
     reformat_matrix(rows, columns);
     convert_matrix_to_integers(rows, columns);
