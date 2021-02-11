@@ -24,25 +24,39 @@ var atoms = [];
 var matrix = [];
 var unsorted_reactant = [];
 var unsorted_product = [];
+var replaceList = [];
+var symbol = [];
 
 balance();
 
 function balance(){ // balance; basically main()
     equation = document.getElementById("balancer").value;
     init();
+    equation = ridParenthesis();
+    list = equation.split(" ");
     createLists();
     createMatrix();
-
-    console.log(matrix);
 
     rows = matrix.length;
     columns = matrix[0].length;
     coefficients = process_matrix_to_coefficients(rows, columns);
-    console.log(coefficients);
-    console.log(getString());
     var str1 = getString();
+    for (i = 0; i < replaceList.length; i++){
+        for (j = 0; j < str1.length; j++){
+            if (str1.charAt(j) === symbol[i]){
+                if (j !== str1.length-1 && validateInt(str1.charAt(j+1))){
+                    str1 = str1.replace(symbol[i], "(" + replaceList[i] + ")");
+                    j += replaceList[i].length + 1;
+                }
+                else {
+                    str1 = str1.replace(symbol[i], replaceList[i]);
+                    j += replaceList[i].length - 1;
+                }
+            }
+        }
+    }
 
-    document.getElementById("output").innerHTML = str1;
+    document.getElementById("output").innerHTML = convertString(str1);
     // document.write("<p>" + eq + "</p>");
     //document.getElementById("balancer").value = balanced;
 
@@ -81,12 +95,12 @@ function getString(){
     else{
         string += unsorted_product[unsorted_product.length-1];
     }
-    return convertString(string);
+    return string;
 
 }
 
 function convertString(string){
-    str = "";
+    str = string[0];
     for (let i = 1; i < string.length; i++){
         if (validateInt(string.charAt(i)) && string.charAt(i-1) === ' '){
             str += string.charAt(i);
@@ -109,9 +123,71 @@ function init(){ // set initial values before running
     matrix = [];
     unsorted_reactant = [];
     unsorted_product = [];
-    list = equation.split(" ");
+    replaceList = [];
+    symbol = setSymbolList();
 
 }
+
+function setSymbolList(){
+    temp = ['A', 'D', 'E', 'G', 'J', 'L', 'M', 'Q', 'R', 'T', 'X', 'Z'];
+    for (i = 0; i < temp.length; i++){
+        if (!equation.includes(temp[i])){
+            symbol.push(temp[i]);
+        }
+    }
+    return symbol;
+}
+
+/*function ridParenthesis(){
+    check = false;
+    str = "";
+    start_index;
+    end_index;
+    for (i = 0; i < equation.length; i++){
+        if (equation.charAt(i) === "("){
+            check = true;
+            start_index = i;
+        }
+        else if (equation.charAt(i) === ")"){
+            check = false;
+            end_index = i+2;
+        }
+        else if (check){
+            str += equation.charAt(i);
+        }
+    }
+}
+
+function distribute(num, molecule){
+
+}*/
+function ridParenthesis(){
+    var num = 0;
+    while (equation.includes("(")){
+        var check = false;
+        var str = "";
+        for (i = 0; i < equation.length; i++){
+            if (equation.charAt(i) === "("){
+                check = true;
+            }
+            else if (equation.charAt(i) === ")"){
+                check = false;
+                i =0;
+                equation = equation.replaceAll("(" + str + ")", symbol[num]);
+                equation = equation.replaceAll(str, symbol[num++]);
+                replaceList.push(str);
+                break;
+            }
+            else if (check){
+                str += equation.charAt(i);
+            }
+        }
+    }
+    return equation;
+
+}
+
+
 
 function createLists(){ // create lists of reactant and product
     for (i = 0; i < list.length; i++){
@@ -133,9 +209,6 @@ function createLists(){ // create lists of reactant and product
 
     reactant = splitElements(unsorted_reactant,true);
     product = splitElements(unsorted_product,false);
-
-    console.log(reactant);
-    console.log(product);
 
     atoms = [...new Set(atoms)];
 
