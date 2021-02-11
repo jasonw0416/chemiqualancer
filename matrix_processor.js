@@ -1,6 +1,6 @@
-var matrix = [[1, 0, 0, -1, 0], [3, 0, -1, 0, 0], [0, 1, -1, 0, 0]];
+var matrix = [[2, 0, -1, 0, 0], [0, 2, -2, -1, 0], [6, 0, 0, -2, 0], [0, 0, 0, 0, 0]];
 
-console.log(process_matrix_to_coefficients(3, 5));
+console.log(process_matrix_to_coefficients(4, 5));
 //console.log(fractioniseMatrix());
 
 function createFraction(numerator, denominator){
@@ -23,7 +23,7 @@ function fractionInverse(num1) {
     return [num1[1], num1[0]];
 }
 function fractionDivide(num1, num2) {
-    fractionMultiply(num1, fractionInverse(num2));
+    return fractionMultiply(num1, fractionInverse(num2));
 
 }
 
@@ -53,7 +53,7 @@ function rref(rows, columns) {
         var val = matrix[r][pivot];
 
         for (j = 0; j < columns; ++j){
-            fractionDivide(matrix[r][j], val);
+            matrix[r][j] = fractionDivide(matrix[r][j], val);
         }
 
         for (i = 0; i < rows; ++i) {
@@ -225,6 +225,10 @@ function printMatrix(){
     }
 }
 
+function assignValuesToFreeVariables(freeVariables, coefficients){
+
+}
+
 function process_matrix_to_coefficients(rows, columns) {//converts the matrix to a list of coefficients corresponding with the order of compounds as they appear.
     var coefficients = [];
     for (j = 0; j < matrix[0].length - 1; ++j){
@@ -236,8 +240,9 @@ function process_matrix_to_coefficients(rows, columns) {//converts the matrix to
     fractioniseMatrix();
     rref(rows, columns);
     reformat_matrix(rows, columns);
-    convert_matrix_to_integers(rows, columns);
     printMatrix();
+    convert_matrix_to_integers(rows, columns);
+
     free_variables = find_free_variables(rows, columns);
     console.log(free_variables);
     for (i = 0; i < free_variables.length; ++i){
