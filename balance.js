@@ -38,6 +38,7 @@ function balance(){ // balance; basically main()
     console.log(checking);
     if (checking !== "SUCCESS"){
         error();
+        document.getElementById("output").innerHTML = "";
         return "";
     }
     init();
@@ -168,14 +169,14 @@ function checkerror(){
     for (let i = 0; i < str.length; i++){
         // check valid character
         if (str.charAt(i) !== "+" && str.charAt(i) !== " " && !validateInt(str.charAt(i))
-        && !isLetter(str.charAt(i)) && !isUpper(str.charAt(i))){
-            return "invalid character at position " + i;
-        }
-        if (i !== str.length - 1 && isLetter(str.charAt(i)) && isLetter(str.charAt(i+1))){
-            return "invalid input at position " + i;
+        && !isLower(str.charAt(i)) && !isUpper(str.charAt(i))){
+            return "invalid character " + str.charAt(i);
         }
         if (str.charAt(i) === "+" && (i === str.length - 1 || i === 0 || str.charAt(i-1) !== " " || str.charAt(i+1) !== " ")){
             return "invalid input around + sign; please put spaces between plus"
+        }
+        if (isLower(str.charAt(i)) && (i === 0 || !isUpper(str.charAt(i-1) || (i !== str.length - 1 && isLower(str.charAt(i+1)))))){
+            return "invalid input " + str.charAt(i);
         }
     }
     return "SUCCESS";
@@ -185,7 +186,7 @@ function successExit() {
     document.getElementById("success_alert").style.display="none";
 }
 function errorExit() {
-    document.getElementById("success_alert").style.display="none";
+    document.getElementById("error_alert").style.display="none";
 }
 function success() {
     if(document.getElementById("error_alert").style.display === ""){
@@ -342,12 +343,12 @@ function validateInt(char) { // validate if the character is int or not
     return regx.test(char);
 }
 
-function isLetter(str) {
-    return str.length === 1 && str.match(/[a-z]/i);
+function isLower(str) {
+    return str.length === 1 && str.match(/^[a-z]+$/);
 }
 
 function isUpper(str) {
-    return str.length === 1 && str.match(/[A-Z]/i);
+    return str.length === 1 && str.match(/^[A-Z]+$/);
 }
 
 function rref(rows, columns) {
