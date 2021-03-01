@@ -31,6 +31,16 @@ balance();
 
 function balance(){ // balance; basically main()
     equation = document.getElementById("balancer").value;
+    while (equation.includes("  ")){
+        equation = equation.replaceAll("  ", " ");
+    }
+    var checking = checkerror();
+    console.log(checking);
+    if (checking !== "SUCCESS"){
+        error();
+        document.getElementById("output").innerHTML = "";
+        return "";
+    }
     init();
     equation = ridParenthesis();
     list = equation.split(" ");
@@ -57,6 +67,7 @@ function balance(){ // balance; basically main()
     }
 
     document.getElementById("output").innerHTML = convertString(str1);
+    success();
     // document.write("<p>" + eq + "</p>");
     //document.getElementById("balancer").value = balanced;
 
@@ -138,29 +149,60 @@ function setSymbolList(){
     return symbol;
 }
 
-/*function ridParenthesis(){
-    check = false;
-    str = "";
-    start_index;
-    end_index;
-    for (i = 0; i < equation.length; i++){
-        if (equation.charAt(i) === "("){
-            check = true;
-            start_index = i;
+function checkerror(){
+    var str = equation;
+    if (!str.includes(" ")){
+        return "spaces missing!"
+    }
+    if (str.includes(" --> ")){
+        str = str.replace(" --> ", " ");
+    }
+    else if (str.includes(" -> ")){
+        str = str.replace(" -> ", " ");
+    }
+    else if (str.includes(" = ")){
+        str = str.replace(" = ", " ");
+    }
+    else {
+        return "reactants and products need to be separated by \" --> \", \" -> \" or, \" = \""
+    }
+    for (let i = 0; i < str.length; i++){
+        // check valid character
+        if (str.charAt(i) !== "+" && str.charAt(i) !== " " && !validateInt(str.charAt(i))
+        && !isLower(str.charAt(i)) && !isUpper(str.charAt(i))){
+            return "invalid character " + str.charAt(i);
         }
-        else if (equation.charAt(i) === ")"){
-            check = false;
-            end_index = i+2;
+        if (str.charAt(i) === "+" && (i === str.length - 1 || i === 0 || str.charAt(i-1) !== " " || str.charAt(i+1) !== " ")){
+            return "invalid input around + sign; please put spaces between plus"
         }
-        else if (check){
-            str += equation.charAt(i);
+        if (isLower(str.charAt(i)) && (i === 0 || !isUpper(str.charAt(i-1) || (i !== str.length - 1 && isLower(str.charAt(i+1)))))){
+            return "invalid input " + str.charAt(i);
         }
     }
+    return "SUCCESS";
 }
 
-function distribute(num, molecule){
+function successExit() {
+    document.getElementById("success_alert").style.display="none";
+}
+function errorExit() {
+    document.getElementById("error_alert").style.display="none";
+}
+function success() {
+    if(document.getElementById("error_alert").style.display === ""){
+        document.getElementById("error_alert").style.display = "none";
+    }
+    document.getElementById("success_alert").style.display="";
+    setTimeout(successExit, 8000);
+}
+function error() {
+    if(document.getElementById("success_alert").style.display === ""){
+        document.getElementById("success_alert").style.display = "none";
+    }
+    document.getElementById("error_alert").style.display="";
+    setTimeout(errorExit, 8000);
+}
 
-}*/
 function ridParenthesis(){
     var num = 0;
     while (equation.includes("(")){
@@ -187,11 +229,9 @@ function ridParenthesis(){
 
 }
 
-
-
 function createLists(){ // create lists of reactant and product
     for (i = 0; i < list.length; i++){
-        if (list[i] === "->"){
+        if (list[i] === "->" || list === "-->" || list === "="){
             reactant_check = false;
         }
         else if(list[i] !== "+"){
@@ -214,6 +254,7 @@ function createLists(){ // create lists of reactant and product
 
     // console.log(atoms);
 }
+
 
 
 function createMatrix(){ // create matrix used for calculating coefficients
@@ -302,10 +343,13 @@ function validateInt(char) { // validate if the character is int or not
     return regx.test(char);
 }
 
-function isLetter(str) {
-    return str.length === 1 && str.match(/[a-z]/i);
+function isLower(str) {
+    return str.length === 1 && str.match(/^[a-z]+$/);
 }
 
+function isUpper(str) {
+    return str.length === 1 && str.match(/^[A-Z]+$/);
+}
 
 function createFraction(numerator, denominator){
     return [numerator, denominator];
