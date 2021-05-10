@@ -33,15 +33,29 @@
 <body>
 
 
-    <div class="parallax"></div>
-
-<div class="row upwards">
-    <div class="col-sm-4"></div>
-    <div class="col-sm-4">
-        <input class="form-control balanceForm" id="balancer" placeholder="Enter Unbalanced Equation">
+    <div class="parallax">
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4 d-flex justify-content-center">
+                <h1 class="centerText text-white">Chemical Equation Balancer</h1>
+            </div>
+            <div class="col-sm-4">
+    
+            </div>
+        </div>
+        <div class="row upwards">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <input class="form-control" id="balancer" placeholder="Enter Unbalanced Equation"> 
+            
+            </div>
+            <div class="col-sm-4">
+                <button class="btn btn-primary" onclick="balance()" >Balance!</button>
+            </div>
+        </div>
     </div>
-    <div class="col-sm-4"></div>
-</div>
+
+
 <div class="row btnRow">
     <div class="col-sm-4"></div>
     <div class="col-sm-4">
@@ -54,13 +68,6 @@
             <strong>Error!</strong>  Your equation could not be balanced! Check for invalid symbols or molecules!
             <button type="button" class="btn-close" aria-label="Close" onclick="errorExit()"></button>
         </div>
-    </div>
-    <div class="col-sm-4"></div>
-</div>
-<div class="row btnRow">
-    <div class="col-sm-4"></div>
-    <div class="col-sm-4">
-        <button class="btn btn-primary" onclick="balance()" >Balance!</button>
     </div>
     <div class="col-sm-4"></div>
 </div>
