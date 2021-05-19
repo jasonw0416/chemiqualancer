@@ -45,6 +45,8 @@ function balance(){ // balance; basically main()
     init();
     checking = checkParenthesis();
     console.log(checking);
+    console.log(atoms);
+    console.log(atoms2);
     if (checking !== "SUCCESS"){
         error();
         document.getElementById("output").innerHTML = "";
@@ -127,7 +129,7 @@ function getString(){
 }
 
 function convertString(string){
-    str = string[0];
+    /*str = string[0];
     for (let i = 1; i < string.length; i++){
         if (validateInt(string.charAt(i)) && string.charAt(i-1) === ' '){
             str += string.charAt(i);
@@ -139,7 +141,30 @@ function convertString(string){
             str += string.charAt(i);
         }
     }
+    return str;*/
+
+    var subscript = false;
+    str = "";
+    for (let i = 0; i < string.length; i++){
+        if (validateInt(string.charAt(i))){
+            if (subscript){
+                str += string.charAt(i).sub();
+            }
+            else{
+                str += string.charAt(i);
+            }
+        }
+        else if (string.charAt(i) === " "){
+            subscript = false;
+            str += string.charAt(i);
+        }
+        else {
+            subscript = true;
+            str += string.charAt(i);
+        }
+    }
     return str;
+
 }
 
 function init(){ // set initial values before running
@@ -367,7 +392,17 @@ function createMatrix(){ // create matrix used for calculating coefficients
             if (reactant[j].includes(atoms[i] + " ")){
                 if (reactant[j].indexOf(atoms[i] + " ") !== 0
                 && validateInt(reactant[j].charAt(reactant[j].indexOf(atoms[i] + " ") - 1))){
-                    matrix[i][j] = parseInt(reactant[j].charAt(reactant[j].indexOf(atoms[i] + " ") - 1));
+                    k = 1;
+                    str = "";
+                    while (reactant[j].indexOf(atoms[i] + " ") - k >= 0
+                        && validateInt(reactant[j].charAt(reactant[j].indexOf(atoms[i] + " ") - k))){
+                        str = reactant[j].charAt(reactant[j].indexOf(atoms[i] + " ") - k) + str;
+                        k++;
+                    }
+                    //console.log("debug: " + str);
+
+                    matrix[i][j] = parseInt(str);
+                    //matrix[i][j] = parseInt(reactant[j].charAt(reactant[j].indexOf(atoms[i] + " ") - 1));
                 }
                 else{
                     matrix[i][j] = 1;
@@ -381,7 +416,18 @@ function createMatrix(){ // create matrix used for calculating coefficients
             if (product[j].includes(atoms[i] + " ")){
                 if (product[j].indexOf(atoms[i] + " ") !== 0
                     && validateInt(product[j].charAt(product[j].indexOf(atoms[i] + " ") - 1))){
-                    matrix[i][j+reactant.length] = -1 * parseInt(product[j].charAt(product[j].indexOf(atoms[i] + " ") - 1));
+
+                    k = 1;
+                    str = "";
+                    while (product[j].indexOf(atoms[i] + " ") - k >= 0
+                    && validateInt(product[j].charAt(product[j].indexOf(atoms[i] + " ") - k))){
+                        str = product[j].charAt(product[j].indexOf(atoms[i] + " ") - k) + str;
+                        k++;
+                    }
+                    //console.log("debug: " + str);
+
+                    matrix[i][j+reactant.length] = -1 * parseInt(str);
+                    //matrix[i][j+reactant.length] = -1 * parseInt(product[j].charAt(product[j].indexOf(atoms[i] + " ") - 1));
                 }
                 else{
                     matrix[i][j+reactant.length] = -1;
@@ -396,9 +442,11 @@ function createMatrix(){ // create matrix used for calculating coefficients
     for (i = 0; i < matrix.length; i++){
         matrix[i].push(0);
     }
+
 }
 
 function splitElements(myList, reactant){ // split elements for easier reading
+    console.log(myList);
     finalList = [];
     for (i = 0; i < myList.length; i++){
         finalString = "";
@@ -406,14 +454,22 @@ function splitElements(myList, reactant){ // split elements for easier reading
         for (j = 0; j < element.length; j++){
             if (element[j] === element[j].toUpperCase()){
                 if(j < element.length - 1 && validateInt(element[j+1])){
-                    finalString += element[j+1] + element[j] + " ";
+                    //finalString += element[j+1] + element[j] + " ";
+                    k = 1;
+                    while (j + k < element.length && validateInt(element[j+k])){
+                        finalString += element[j+k];
+                        k++;
+                    }
+                    finalString += element[j] + " ";
+
                     if (reactant){
                         atoms.push(element[j]);
                     }
                     if (!reactant){
                         atoms2.push(element[j]);
                     }
-                    j++;
+                    //j++;
+                    j += k - 1;
                 }
                 else if (j < element.length - 1 && element[j+1] === element[j+1].toLowerCase()){
                     temp = element[j] + element[j+1];
@@ -423,11 +479,19 @@ function splitElements(myList, reactant){ // split elements for easier reading
                     if (!reactant){
                         atoms2.push(temp);
                     }
-                    if (j < element.length - 2 && validateInt(element[j+2])){
+                    /*if (j < element.length - 2 && validateInt(element[j+2])){
                         temp = element[j+2] + temp;
                         j++;
                     }
-                    j++;
+                    j++;*/
+
+                    k = 2;
+                    while (j + k < element.length && validateInt(element[j+k])){
+                        finalString += element[j+k];
+                        k++;
+                    }
+                    j += k - 1;
+
                     finalString += temp + " ";
                 }
                 else{
@@ -443,6 +507,7 @@ function splitElements(myList, reactant){ // split elements for easier reading
         }
         finalList.push(finalString);
     }
+    console.log(finalList);
     return finalList;
 }
 
