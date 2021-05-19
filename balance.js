@@ -21,6 +21,7 @@ var reactant_check = true;
 var reactant = [];
 var product = [];
 var atoms = [];
+var atoms2 = [];
 var matrix = [];
 var unsorted_reactant = [];
 var unsorted_product = [];
@@ -42,9 +43,24 @@ function balance(){ // balance; basically main()
         return "";
     }
     init();
+    checking = checkParenthesis();
+    console.log(checking);
+    if (checking !== "SUCCESS"){
+        error();
+        document.getElementById("output").innerHTML = "";
+        return "";
+    }
     equation = ridParenthesis();
     list = equation.split(" ");
     createLists();
+    checking = checkReaPro();
+    console.log(checking);
+
+    if (checking !== "SUCCESS"){
+        error();
+        document.getElementById("output").innerHTML = "";
+        return "";
+    }
     createMatrix();
 
     rows = matrix.length;
@@ -131,6 +147,7 @@ function init(){ // set initial values before running
     reactant = [];
     product = [];
     atoms = [];
+    atoms2 = [];
     matrix = [];
     unsorted_reactant = [];
     unsorted_product = [];
@@ -169,7 +186,7 @@ function checkerror(){
     for (let i = 0; i < str.length; i++){
         // check valid character
         if (str.charAt(i) !== "+" && str.charAt(i) !== " " && !validateInt(str.charAt(i))
-        && !isLower(str.charAt(i)) && !isUpper(str.charAt(i))){
+        && !isLower(str.charAt(i)) && !isUpper(str.charAt(i)) && str.charAt(i) !== "(" && str.charAt(i) !== ")"){
             return "invalid character " + str.charAt(i);
         }
         if (str.charAt(i) === "+" && (i === str.length - 1 || i === 0 || str.charAt(i-1) !== " " || str.charAt(i+1) !== " ")){
@@ -179,6 +196,90 @@ function checkerror(){
             return "invalid input " + str.charAt(i);
         }
     }
+    return "SUCCESS";
+}
+
+function checkParenthesis() {
+    parlist = [];
+    if (equation.includes(" --> ")){
+        parlist = equation.split(" --> ");
+    }
+    else if (equation.includes(" -> ")){
+        parlist = equation.split(" -> ");
+    }
+    else if (equation.includes(" = ")){
+        parlist = equation.split(" = ");
+    }
+
+    stack = [];
+    for (let i = 0; i < parlist[0].length; i++){
+        if (parlist[0].charAt(i) === "("){
+            stack.push("0");
+        }
+        else if (parlist[0].charAt(i) === ")"){
+            if (stack.length === 0)
+                return "unequal number of parenthesis";
+            else{
+                stack.pop();
+            }
+        }
+    }
+    if (stack.length !== 0){
+        return "unequal number of parenthesis";
+    }
+
+    stack = [];
+    for (let i = 0; i < parlist[1].length; i++){
+        if (parlist[1].charAt(i) === "("){
+            stack.push("0");
+        }
+        else if (parlist[1].charAt(i) === ")"){
+            if (stack.length === 0)
+                return "unequal number of parenthesis";
+            else{
+                stack.pop();
+            }
+        }
+    }
+    if (stack.length !== 0){
+        return "unequal number of parenthesis";
+    }
+
+    return "SUCCESS";
+
+}
+
+function checkReaPro(){
+    var check = false;
+    for (let i = 0; i < atoms.length; i++){
+        var rea = atoms[i];
+        for (let j = 0; j < atoms2.length; j++){
+            if (rea === atoms2[j]){
+                check = true;
+                break;
+            }
+        }
+        if (!check){
+            return "reactants and products not matching";
+        }
+        check = false;
+    }
+
+    check = false;
+    for (let i = 0; i < atoms2.length; i++){
+        rea = atoms2[i];
+        for (let j = 0; j < atoms.length; j++){
+            if (rea === atoms[j]){
+                check = true;
+                break;
+            }
+        }
+        if (!check){
+            return "reactants and products not matching";
+        }
+        check = false;
+    }
+
     return "SUCCESS";
 }
 
@@ -244,13 +345,11 @@ function createLists(){ // create lists of reactant and product
         }
     }
 
-    console.log(unsorted_reactant);
-    console.log(unsorted_product);
-
     reactant = splitElements(unsorted_reactant,true);
     product = splitElements(unsorted_product,false);
 
     atoms = [...new Set(atoms)];
+    atoms2 = [...new Set(atoms2)];
 
     // console.log(atoms);
 }
@@ -311,12 +410,18 @@ function splitElements(myList, reactant){ // split elements for easier reading
                     if (reactant){
                         atoms.push(element[j]);
                     }
+                    if (!reactant){
+                        atoms2.push(element[j]);
+                    }
                     j++;
                 }
                 else if (j < element.length - 1 && element[j+1] === element[j+1].toLowerCase()){
                     temp = element[j] + element[j+1];
                     if (reactant){
                         atoms.push(temp);
+                    }
+                    if (!reactant){
+                        atoms2.push(temp);
                     }
                     if (j < element.length - 2 && validateInt(element[j+2])){
                         temp = element[j+2] + temp;
@@ -329,6 +434,9 @@ function splitElements(myList, reactant){ // split elements for easier reading
                     finalString += element[j] + " ";
                     if (reactant){
                         atoms.push(element[j]);
+                    }
+                    if (!reactant){
+                        atoms2.push(element[j]);
                     }
                 }
             }
